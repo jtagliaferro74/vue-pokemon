@@ -2,7 +2,7 @@
 	<div id="pokemon-details">
 		<!-- <Navbar @randomize="getRandomId()" /> -->
 		<Navbar />
-		<div class="content">
+		<div v-if="!error" class="content">
 			<div class="adjacent-pokewmon-link-row">
 				<router-link v-if="pokemon.id > 1" :to="`/${pokemon.id - 1}`">
 					<div class="unicon-container">
@@ -61,7 +61,7 @@
 					/>
 				</div>
 			</div>
-			<h3>Evolution Chain</h3>
+			<h3 v-if="evolution_chain_data.evolves_to">Evolution Chain</h3>
 			<div v-if="evolution_chain_data.evolves_to" class="evolution-chain">
 				<div
 					class="evolution-chain-item"
@@ -76,6 +76,11 @@
 					</span>
 				</div>
 			</div>
+		</div>
+		<div v-if="error" class="error">
+			<h1>Oh No! There's been an Error!</h1>
+			<p>Maybe the Pokemon you were looking for doesn't exist...</p>
+			<!-- <router-link>Try Another</router-link> -->
 		</div>
 	</div>
 </template>
@@ -102,6 +107,7 @@
 		},
 		data() {
 			return {
+				error: false,
 				pokemon_id: 1,
 				pokemon: {},
 				species_data: {},
@@ -140,6 +146,7 @@
 						})
 						.catch((err) => {
 							console.log(err);
+							this.error = true;
 						});
 				} catch (error) {
 					console.log(error);
@@ -249,6 +256,7 @@
 </script>
 
 <style>
+	.error,
 	.content {
 		/* width: 90%; */
 		margin: auto;
@@ -338,6 +346,14 @@
 		margin-bottom: 16px;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 		/* text-align: center; */
+	}
+
+	.error h1 {
+		color: #353535;
+		font-size: 2.5rem;
+		margin-top: 0px;
+		margin-bottom: 16px;
+		border-bottom: none;
 	}
 
 	h2,
